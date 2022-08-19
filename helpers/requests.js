@@ -13,15 +13,6 @@ const { Lock } = require('semaphore-async-await')
 const { isRuChat } = require('./isRuChat')
 const { isOver10000 } = require('./goldenBorodutchSubCount')
 
-const promoAdditions = {
-  ru: () =>
-    isOver10000()
-      ? '<a href="https://www.ua2canada.info">Информация по переезду из 🇺🇦 в 🇨🇦</a>'
-      : '<a href="https://www.ua2canada.info">Информация по переезду из 🇺🇦 в 🇨🇦</a>',
-  en: () =>
-    '<a href="https://www.ua2canada.info/">Info on moving from 🇺🇦 to 🇨🇦</a>',
-}
-
 /**
  * Starts ban request
  * @param {Telegram:Bot} bot Bot that should respond
@@ -70,14 +61,12 @@ async function startRequest(bot, msg) {
   const starterName = await request.starter.realNameWithHTML(bot, chat.id)
   const candidateName = await request.candidate.realNameWithHTML(bot, chat.id)
 
-  const promoAddition = promoAdditions[isRuChat(chat) ? 'ru' : 'en']()
-
   const text = `${strings.translate(
     'kickRequest',
     request.chat.language,
     starterName,
     candidateName
-  )}\n${promoAddition}`
+  )}`
   const options = {
     parse_mode: 'HTML',
     disable_web_page_preview: true,
@@ -194,14 +183,12 @@ async function updateMessage(bot, request) {
     request.chat.id
   )
 
-  const promoAddition = promoAdditions[isRuChat(request.chat) ? 'ru' : 'en']()
-
   const text = `${strings.translate(
     'kickRequest',
     request.chat.language,
     starterName,
     candidateName
-  )}\n${promoAddition}`
+  )}`
   const options = {
     parse_mode: 'HTML',
     chat_id: request.inline_chat_id,
@@ -255,8 +242,6 @@ async function finishRequest(bot, request) {
     request.chat.id
   )
 
-  const promoAddition = promoAdditions[isRuChat(request.chat) ? 'ru' : 'en']()
-
   const text = `${
     saved
       ? strings.translate(
@@ -271,7 +256,7 @@ async function finishRequest(bot, request) {
           candidateName,
           voters
         )
-  }\n${promoAddition}`
+  }`
 
   if (!saved) {
     bot.kickChatMember(request.chat.id, request.candidate.id)
